@@ -1,40 +1,97 @@
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
+# -------------------------------
 # Load dataset
-df = pd.read_csv(r"C:\Users\A15 TUF GAMING\Downloads\archive\4_malicious_ips.csv")
+# -------------------------------
+FILE_PATH = r"C:\Users\A15 TUF GAMING\Downloads\archive\4_malicious_ips.csv"
+df = pd.read_csv(FILE_PATH)
 
-# Preview data
-print("First 5 rows of the dataset:")
-print(df.head())
+print("Columns in dataset:")
+print(df.columns)
 
-# --- Histogram: Reputation Score ---
-plt.figure()
-plt.hist(df['Reputation_Score'], bins=20, color='skyblue', edgecolor='black')
-plt.title('Distribution of Reputation Scores (Malicious IPs)')
-plt.xlabel('Reputation Score')
-plt.ylabel('Number of IPs')
+# -------------------------------
+# Data preparation
+# -------------------------------
+reputation = df["Reputation_Score"].dropna()
+
+# -------------------------------
+# Normal curve function
+# -------------------------------
+def normal_curve(ax, data):
+    mu = data.mean()
+    sigma = data.std()
+
+    x = np.linspace(data.min(), data.max(), 100)
+    y = (1/(sigma*np.sqrt(2*np.pi))) * np.exp(-0.5*((x-mu)/sigma)**2)
+
+    ax.plot(x, y, color="red", linewidth=2)
+
+# -------------------------------
+# 1. Main Histogram (Reputation Score)
+# -------------------------------
+plt.figure(figsize=(7, 4))
+
+plt.hist(reputation, bins=30, color='skyblue', edgecolor='black')
+plt.title("Distribution of Malicious IP Reputation Scores")
+plt.xlabel("Reputation Score")
+plt.ylabel("Frequency")
+
+normal_curve(plt.gca(), reputation)
+
 plt.tight_layout()
 plt.show()
 
-# --- Count IPs per Country ---
-country_counts = df['Country'].value_counts()
-plt.figure()
-country_counts.plot(kind='bar', color='orange', edgecolor='black')
-plt.title('Number of Malicious IPs per Country')
-plt.xlabel('Country')
-plt.ylabel('Count')
-plt.xticks(rotation=45, ha='right')
+# -------------------------------
+# 2. Top Countries with Malicious IPs
+# -------------------------------
+top_countries = df["Country"].value_counts().head(10)
+
+plt.figure(figsize=(7, 4))
+
+top_countries.plot(kind="bar", color="orange", edgecolor="black")
+
+plt.title("Top 10 Countries with Malicious IPs")
+plt.xlabel("Country")
+plt.ylabel("Count")
+plt.xticks(rotation=45, ha="right")
+
 plt.tight_layout()
 plt.show()
 
-# --- Count IPs per ASN ---
-asn_counts = df['ASN'].value_counts().head(10)
-plt.figure()
-asn_counts.plot(kind='bar', color='green', edgecolor='black')
-plt.title('Top 10 ASNs with Malicious IPs')
-plt.xlabel('ASN')
-plt.ylabel('Count')
-plt.xticks(rotation=45, ha='right')
+# -------------------------------
+# 3. Top ASN Distribution
+# -------------------------------
+top_asn = df["ASN"].value_counts().head(10)
+
+plt.figure(figsize=(7, 4))
+
+top_asn.plot(kind="bar", color="green", edgecolor="black")
+
+plt.title("Top 10 ASNs with Malicious IPs")
+plt.xlabel("ASN")
+plt.ylabel("Count")
+plt.xticks(rotation=45, ha="right")
+
+plt.tight_layout()
+plt.show()
+
+# -------------------------------
+# 4. Country vs Reputation 
+# -------------------------------
+high_risk = df[df["Reputation_Score"] > df["Reputation_Score"].median()]["Reputation_Score"]
+low_risk = df[df["Reputation_Score"] <= df["Reputation_Score"].median()]["Reputation_Score"]
+
+plt.figure(figsize=(7, 4))
+
+plt.hist(low_risk, bins=20, alpha=0.6, label="Low Risk", color="blue", edgecolor="black")
+plt.hist(high_risk, bins=20, alpha=0.6, label="High Risk", color="red", edgecolor="black")
+
+plt.title("Malicious IP Risk Level Distribution")
+plt.xlabel("Reputation Score")
+plt.ylabel("Frequency")
+plt.legend()
+
 plt.tight_layout()
 plt.show()
