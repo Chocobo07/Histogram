@@ -10,28 +10,31 @@ print(df.head())
 
 # --- Histogram: Reputation Score ---
 plt.figure()
-plt.hist(df['Reputation_Score'], bins=20)
+plt.hist(df['Reputation_Score'], bins=20, color='skyblue', edgecolor='black')
 plt.title('Distribution of Reputation Scores (Malicious IPs)')
 plt.xlabel('Reputation Score')
 plt.ylabel('Number of IPs')
+plt.tight_layout()
 plt.show()
 
-# --- Optional: Count IPs per Country ---
+# --- Count IPs per Country ---
 country_counts = df['Country'].value_counts()
-
 plt.figure()
-country_counts.plot(kind='bar')
+country_counts.plot(kind='bar', color='orange', edgecolor='black')
 plt.title('Number of Malicious IPs per Country')
 plt.xlabel('Country')
 plt.ylabel('Count')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
 plt.show()
 
-# --- Optional: Count IPs per ASN ---
-asn_counts = df['ASN'].value_counts().head(10)  # top 10 ASNs
-
+# --- Count IPs per ASN ---
+asn_counts = df['ASN'].value_counts().head(10)
 plt.figure()
-asn_counts.plot(kind='bar')
+asn_counts.plot(kind='bar', color='green', edgecolor='black')
 plt.title('Top 10 ASNs with Malicious IPs')
 plt.xlabel('ASN')
 plt.ylabel('Count')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
 plt.show()
