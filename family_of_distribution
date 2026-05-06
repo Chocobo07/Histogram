@@ -1,0 +1,30 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy.stats as stats
+
+# Load dataset
+df = pd.read_csv(r"C:\Users\A15 TUF GAMING\Downloads\archive\4_malicious_ips.csv")
+
+# Extract the numeric column
+data = df['Reputation_Score'].dropna()
+
+# Plot histogram
+plt.hist(data, bins=20, density=True, alpha=0.6, color='skyblue', edgecolor='black')
+
+# Define candidate distributions
+distributions = [stats.norm, stats.expon, stats.gamma, stats.lognorm]
+
+x = np.linspace(min(data), max(data), 100)
+
+# Fit and overlay each distribution
+for dist in distributions:
+    params = dist.fit(data)  # estimate parameters
+    pdf = dist.pdf(x, *params[:-2], loc=params[-2], scale=params[-1])
+    plt.plot(x, pdf, label=dist.name)
+
+plt.title("Family of Distributions Fit to Reputation Scores")
+plt.xlabel("Reputation Score")
+plt.ylabel("Density")
+plt.legend()
+plt.show()
