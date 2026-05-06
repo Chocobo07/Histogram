@@ -1,0 +1,37 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv(r"C:\Users\A15 TUF GAMING\Downloads\archive\4_malicious_ips.csv")
+
+# Preview data
+print("First 5 rows of the dataset:")
+print(df.head())
+
+# --- Histogram: Reputation Score ---
+plt.figure()
+plt.hist(df['Reputation_Score'], bins=20)
+plt.title('Distribution of Reputation Scores (Malicious IPs)')
+plt.xlabel('Reputation Score')
+plt.ylabel('Number of IPs')
+plt.show()
+
+# --- Optional: Count IPs per Country ---
+country_counts = df['Country'].value_counts()
+
+plt.figure()
+country_counts.plot(kind='bar')
+plt.title('Number of Malicious IPs per Country')
+plt.xlabel('Country')
+plt.ylabel('Count')
+plt.show()
+
+# --- Optional: Count IPs per ASN ---
+asn_counts = df['ASN'].value_counts().head(10)  # top 10 ASNs
+
+plt.figure()
+asn_counts.plot(kind='bar')
+plt.title('Top 10 ASNs with Malicious IPs')
+plt.xlabel('ASN')
+plt.ylabel('Count')
+plt.show()
